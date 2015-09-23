@@ -21,9 +21,8 @@
 Extended Selenium2 Library - a web testing library with AngularJS support.
 """
 
-VERSION = '0.5.5'
+from ExtendedSelenium2Library.locators.extendedelementfinder import ExtendedElementFinder
 
-
-def get_version():
-    """Returns the current version."""
-    return VERSION
+__all__ = [
+    "ExtendedElementFinder"
+]

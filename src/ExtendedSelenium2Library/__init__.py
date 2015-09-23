@@ -22,8 +22,8 @@ Extended Selenium2 Library - a web testing library with AngularJS support.
 """
 
 from ExtendedSelenium2Library.decorators import inherit_docs
+from ExtendedSelenium2Library.locators import ExtendedElementFinder
 from ExtendedSelenium2Library.version import get_version
-# from locators import ExtendedElementFinder
 from robot import utils
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -31,41 +31,51 @@ from selenium.webdriver.support.expected_conditions import staleness_of, visibil
 from Selenium2Library import Selenium2Library
 from sys import exc_info
 from time import sleep
+from robot.libraries.BuiltIn import BuiltIn
 
 __version__ = get_version()
 
 
+# pylint: disable=too-many-ancestors
 @inherit_docs
 class ExtendedSelenium2Library(Selenium2Library):
-    """ExtendedSelenium2Library is a Selenium2 (WebDriver) web testing library
-    with AngularJS support and custom improvement for Robot Framework.
+    # pylint: disable=line-too-long
+    """ExtendedSelenium2Library is a [http://goo.gl/boVQia|Selenium2 (WebDriver)]
+    web testing library with [https://goo.gl/Kzz8Y3|AngularJS] support and
+    custom improvement for [http://goo.gl/lES6WM|Robot Framework].
 
-    ExtendedSelenium2Library strives to make the transition from Selenium2Library
-    as seamless as possible.
-    It uses Selenium 2 (WebDriver) libraries and AngularJS synchronization internally
-    to control a web browser and ensure all the keywords stay in sync with AngularJS process.
+    ExtendedSelenium2Library strives to make the transition from
+    [https://goo.gl/1VXDSI|Selenium2Library] as seamless as possible.
+    It uses [http://goo.gl/boVQia|Selenium2 (WebDriver)] libraries
+    and [https://goo.gl/Kzz8Y3|AngularJS] synchronization internally to control a web browser
+    and ensure all the keywords stay in sync with [https://goo.gl/Kzz8Y3|AngularJS] process.
 
     See `Wait Until Angular Ready` keyword for a list of all other keywords that is already
     calling `Wait Until Angular Ready` from within.
-    See http://seleniumhq.org/docs/03_webdriver.html for more information on Selenium 2
-    and WebDriver.
+    See [http://goo.gl/boVQia|Selenium2 and WebDriver] for more information.
 
     ExtendedSelenium2Library runs tests in a real browser instance. It should work in
     most modern browsers and can be used with both Python and Jython interpreters.
 
-    *Non-inherited Keywords*
-
+    Non-inherited Keywords:
     | `Element Attribute Should Contain`     |
     | `Element Attribute Should Not Contain` |
     | `Is Element Visible`                   |
+    | `Register Page Ready Keyword`          |
+    | `Remove Page Ready Keyword`            |
     | `Wait For Async Condition`             |
     | `Wait Until Angular Ready`             |
     | `Wait Until Location Contains`         |
     | `Wait Until Location Does Not Contain` |
 
-    *AngularJS Locators Support*
-
-    Coming Soon...
+    AngularJS Locators Support:
+    | *AngularJS Strategy* | *Example*                                         | *Description*                                        |
+    | model                | Click Element   `|` model=model_name              | Matches by AngularJS model name                      |
+    | binding              | Click Element   `|` binding=binding_name          | Matches by AngularJS binding name                    |
+    | partial binding      | Click Element   `|` partial binding=binding_name  | Matches by partial AngularJS binding name            |
+    | button               | Click Element   `|` button=My Button              | Matches button elements by their button text         |
+    | partial button       | Click Element   `|` partial button=y But          | Matches button elements by their partial button text |
+    | options              | Get WebElements `|` options=options_descriptor    | Matches by AngularJS options descriptor              |
 
     = Before running tests =
 
@@ -73,6 +83,7 @@ class ExtendedSelenium2Library(Selenium2Library):
     imported into your Robot test suite (see `importing` section), and the
     `Open Browser` keyword must be used to open a browser to the desired location.
     """
+    # pylint: disable=line-too-long
 
     # let's not confuse people with different name and version
     __doc__ += Selenium2Library.__doc__.split('desired location.', 1)[-1]. \
@@ -104,32 +115,30 @@ class ExtendedSelenium2Library(Selenium2Library):
         # pylint: disable=line-too-long
         """ExtendedSelenium2Library can be imported with optional arguments.
 
-        `timeout` is the default timeout used to wait for all waiting actions.
-        It can be later set with `Set Selenium Timeout`.
-
-        'implicit_wait' is the implicit timeout that Selenium waits when
-        looking for elements.
-        It can be later set with `Set Selenium Implicit Wait`.
-        See `WebDriver: Advanced Usage`__ section of the SeleniumHQ documentation
-        for more information about WebDriver's implicit wait functionality.
-
-        __ http://seleniumhq.org/docs/04_webdriver_advanced.html#explicit-and-implicit-waits
-
-        `run_on_failure` specifies the name of a keyword (from any available
-        libraries) to execute when a ExtendedSelenium2Library keyword fails. By default
-        `Capture Page Screenshot` will be used to take a screenshot of the current page.
-        Using the value "Nothing" will disable this feature altogether. See
-        `Register Keyword To Run On Failure` keyword for more information about this
-        functionality.
-
-        `block_until_page_ready` if it's true, will block the execution until the page ready.
-
-        `browser_breath_delay` is the delay in seconds to give the browser enough time
-        to execute the next step.
-
-        `ensure_jq` if it's true, will ensure jQuery loaded on the page.
-
-        `poll_frequency` is the number in seconds to retry the next step.
+        Arguments:
+        - ``timeout``: The maximum value to wait for all waiting actions. (Default 90.0)
+                       It can be set later with `Set Selenium Timeout`.
+                       See `introduction` for more information about ``timeout``.
+        - ``implicit_wait``: The maximum implicit timeout value to wait when looking
+                             for elements. (Default 15.0)
+                             It can be later set with `Set Selenium Implicit Wait`.
+                             See [http://goo.gl/8ePMo6|WebDriver: Advanced Usage]
+                             section of the SeleniumHQ documentation for more information about
+                             WebDriver's implicit wait functionality.
+        - ``run_on_failure``: The name of a keyword (from any available libraries) to execute
+                              when a ExtendedSelenium2Library keyword fails. By default
+                              `Capture Page Screenshot` will be used to take a screenshot of
+                              the current page.
+                              Using the value "Nothing" will disable this feature altogether.
+                              See `Register Keyword To Run On Failure` keyword for
+                              more information about this functionality.
+        - ``block_until_page_ready``: A boolean flag to block the execution until
+                                      the page is ready. (Default True)
+        - ``browser_breath_delay``: The delay value in seconds to give the browser enough time to
+                                    complete current execution. (Default 0.05)
+        - ``ensure_jq``: A boolean flag to ensure jQuery library is loaded on the page.
+                         ``sizzle`` locator strategy will depend on this flag. (Default True)
+        - ``poll_frequency``: The delay value in seconds to retry the next step. (Default 0.2)
 
         Examples:
         | Library `|` ExtendedSelenium2Library `|` 15                                            | # Sets default timeout to 15 seconds                                       |
@@ -143,6 +152,7 @@ class ExtendedSelenium2Library(Selenium2Library):
         self._block_until_page_ready = block_until_page_ready
         self._browser_breath_delay = 0.05 \
             if browser_breath_delay is None else float(browser_breath_delay)
+        self._element_finder = ExtendedElementFinder()
         self._ensure_jq = True if ensure_jq else False
         self._implicit_wait_in_secs = 15.0 \
             if implicit_wait is None else float(implicit_wait)
@@ -151,7 +161,9 @@ class ExtendedSelenium2Library(Selenium2Library):
         self._page_ready_bootstrap = self.PAGE_READY_WRAPPER % \
             {'jquery_bootstrap': jquery_bootstrap}
         self._poll_frequency = 0.2 if poll_frequency is None else float(poll_frequency)
-        # self._element_finder = ExtendedElementFinder()
+        self._table_element_finder._element_finder = self._element_finder  # pylint: disable=protected-access
+        self._page_ready_keyword_list = []
+        self._builtin = BuiltIn()
 
     def click_button(self, locator):
         self._scroll_into_view(locator)
@@ -191,12 +203,17 @@ class ExtendedSelenium2Library(Selenium2Library):
         self.wait_until_angular_ready()
 
     def element_attribute_should_contain(self, attribute_locator, expected, message=''):
-        """Verifies element attribute identified by `attribute_locator` contains `expected`.
+        """Verifies element attribute identified by ``attribute_locator`` contains ``expected``.
 
-        `attribute_locator` consists of element locator followed by an @ sign and attribute name,
-        for example "element_id@class".
+        Arguments:
+        - ``attribute_locator``: The locator to find requested element attribute. It consists of
+                                 element locator followed by an @ sign and attribute name,
+                                 for example "element_id@class".
+        - ``expected``: The expected attribute value.
+        - ``message``: The value that would be use to override the default error message.
 
-        `message` can be used to override the default error message.
+        Examples:
+        | Element Attribute Should Contain | css=div.class@class | value |
         """
         actual = self.get_element_attribute(attribute_locator)
         if expected not in actual:
@@ -205,20 +222,25 @@ class ExtendedSelenium2Library(Selenium2Library):
                           " but its value was '%s'." % (attribute_locator, expected, actual)
             raise AssertionError(message)
 
-    def element_attribute_should_not_contain(self, attribute_locator, expected, message=''):
-        """Verifies element attribute identified by `attribute_locator`
-        does not contain `expected`.
+    def element_attribute_should_not_contain(self, attribute_locator, unexpected, message=''):
+        """Verifies element attribute identified by ``attribute_locator``
+        does not contain ``unexpected``.
 
-        `attribute_locator` consists of element locator followed by an @ sign and attribute name,
-        for example "element_id@class".
+        Arguments:
+        - ``attribute_locator``: The locator to find requested element attribute. It consists of
+                                 element locator followed by an @ sign and attribute name,
+                                 for example "element_id@class".
+        - ``unexpected``: The unexpected attribute value.
+        - ``message``: The value that would be use to override the default error message.
 
-        `message` can be used to override the default error message.
+        Examples:
+        | Element Attribute Should Not Contain | css=div.class@class | value |
         """
         actual = self.get_element_attribute(attribute_locator)
-        if expected in actual:
+        if unexpected in actual:
             if not message:
                 message = "Element attribute '%s' should not contain '%s'" \
-                          " but it did." % (attribute_locator, expected)
+                          " but it did." % (attribute_locator, unexpected)
             raise AssertionError(message)
 
     def get_location(self):
@@ -230,13 +252,19 @@ class ExtendedSelenium2Library(Selenium2Library):
         return self._current_browser().execute_async_script(script)
 
     def is_element_visible(self, locator):
-        """Returns element visibility identified by `locator`.
+        """Returns element visibility identified by ``locator``.
 
-        Key attributes for arbitrary elements are `id` and `name`. See
-        `introduction` for details about locating elements.
+        Arguments:
+        - ``locator``: The locator to find requested element. Key attributes for
+                       arbitrary elements are ``id`` and ``name``. See `introduction` for
+                       details about locating elements.
+
+        Examples:
+        | Is Element Visible | css=div.class |
         """
         return self._is_visible(locator)
 
+    # pylint: disable=too-many-arguments
     def open_browser(self, url, browser='firefox', alias=None, remote_url=False,
                      desired_capabilities=None, ff_profile_dir=None):
         index = super(ExtendedSelenium2Library, self).\
@@ -246,6 +274,28 @@ class ExtendedSelenium2Library(Selenium2Library):
         self._wait_until_page_ready()
         self.wait_until_angular_ready()
         return index
+
+    def register_page_ready_keyword(self, keyword_name):
+        """Adds a keyword to be run at the end of the wait until page ready keyword.
+
+        Arguments:
+        - ``keyword_name``: Adds existing keyword name to be run when the page is ready.
+
+        Examples:
+        | Register Page Ready Keyword | My Keyword |
+        """
+        self._page_ready_keyword_list.append(keyword_name)
+
+    def remove_page_ready_keyword(self, keyword_name):
+        """Removes a keyword to be run at the end of the wait until page ready keyword.
+
+        Arguments:
+        - ``keyword_name``: Removes existing keyword name from running when the page is ready.
+
+        Examples:
+        | Remove Page Ready Keyword | My Keyword |
+        """
+        self._page_ready_keyword_list.remove(keyword_name)
 
     def select_all_from_list(self, locator):
         super(ExtendedSelenium2Library, self).select_all_from_list(locator)
@@ -286,19 +336,24 @@ class ExtendedSelenium2Library(Selenium2Library):
         self.wait_until_angular_ready()
 
     def wait_for_async_condition(self, condition, timeout=None, error=None):
-        """Waits until the given asynchronous `condition` is true or `timeout` expires.
+        """Waits until the given asynchronous ``condition`` is true or ``timeout`` expires.
 
-        The `condition` can be arbitrary JavaScript expression but must explicitly signal
-        they are finished by invoking the provided callback at the end.
-        See `Execute Async Javascript` for information about executing asynchronous JavaScript.
-
-        `error` can be used to override the default error message.
-
-        See `introduction` for more information about `timeout` and its default value.
+        Arguments:
+        - ``condition``: The ``condition`` can be arbitrary JavaScript expression but
+                         must explicitly signal when they are finished by invoking
+                         the provided callback at the end. See `Execute Async Javascript`
+                         for information about executing asynchronous JavaScript.
+        - ``timeout``: The maximum value to wait for ``condition`` to come back true.
+                       See `introduction` for more information about ``timeout`` and
+                       its default value.
+        - ``error``: The value that would be use to override the default error message.
 
         See also `Wait For Condition`, `Wait Until Page Contains`, `Wait Until Page Contains
-        Element`, `Wait Until Element Is Visible` and BuiltIn keyword
-        `Wait Until Keyword Succeeds`.
+        Element`, `Wait Until Element Is Visible` and
+        BuiltIn keyword `Wait Until Keyword Succeeds`.
+
+        Examples:
+        | Wait For Async Condition | arguments[arguments.length-1](true) | 15s |
         """
         timeout = self._timeout_in_secs if timeout is None else utils.timestr_to_secs(timeout)
         if not error:
@@ -308,10 +363,11 @@ class ExtendedSelenium2Library(Selenium2Library):
             until(lambda driver: driver.execute_async_script(condition), error)
 
     def wait_until_angular_ready(self, timeout=None, error=None):
-        """Waits until AngularJS is ready to process next request or `timeout` expires.
+        """Waits until [https://goo.gl/Kzz8Y3|AngularJS] is ready to process the next request or
+        ``timeout`` expires.
 
-        You do not need to call this keyword directly,
-        below is the list of keywords which already call this keyword:
+        You generally *do not* need to call this keyword directly,
+        below is the list of keywords which already call this keyword internally:
 
         | `Click Button`                 |
         | `Click Element`                |
@@ -331,14 +387,19 @@ class ExtendedSelenium2Library(Selenium2Library):
         | `Select Radio Button`          |
         | `Submit Form`                  |
 
-        `error` can be used to override the default error message.
-
-        See `introduction` for more information about `timeout` and its
-        default value.
+        Arguments:
+        - ``timeout``: The maximum value to wait for [https://goo.gl/Kzz8Y3|AngularJS]
+                       to be ready to process the next request.
+                       See `introduction` for more information about ``timeout`` and
+                       its default value.
+        - ``error``: The value that would be use to override the default error message.
 
         See also `Wait For Condition`, `Wait Until Page Contains`,
         `Wait Until Page Contains Element`, `Wait Until Element Is Visible`
         and BuiltIn keyword `Wait Until Keyword Succeeds`.
+
+        Examples:
+        | Wait Until Angular Ready | 15s |
         """
         timeout = self._implicit_wait_in_secs if timeout is None else utils.timestr_to_secs(timeout)
         if not error:
@@ -393,17 +454,22 @@ class ExtendedSelenium2Library(Selenium2Library):
         WebDriverWait(None, timeout, self._poll_frequency).until(visibility_of(element), error)
 
     def wait_until_location_contains(self, expected, timeout=None, error=None):
-        """Waits until current URL contains `expected`.
+        """Waits until current URL contains ``expected``.
+        Fails if ``timeout`` expires before the ``expected`` URL presents on the page.
 
-        Fails if `timeout` expires before the expected URL presents on the page. See
-        `introduction` for more information about `timeout` and its
-        default value.
-
-        `error` can be used to override the default error message.
+        Arguments:
+        - ``expected``: The expected URL value.
+        - ``timeout``: The maximum value to wait for URL to contains ``expected``.
+                       See `introduction` for more information about ``timeout`` and
+                       its default value.
+        - ``error``: The value that would be use to override the default error message.
 
         See also `Wait Until Location Does Not Contain`, `Wait Until Page Contains`,
         `Wait Until Page Contains Element`, `Wait For Condition`,
         `Wait Until Element Is Visible` and BuiltIn keyword `Wait Until Keyword Succeeds`.
+
+        Examples:
+        | Wait Until Location Contains | www | 15s |
         """
         timeout = self._timeout_in_secs if timeout is None else utils.timestr_to_secs(timeout)
         if not error:
@@ -412,25 +478,30 @@ class ExtendedSelenium2Library(Selenium2Library):
         WebDriverWait(self, timeout, self._poll_frequency).\
             until(lambda driver: expected in driver.get_location(), error)
 
-    def wait_until_location_does_not_contain(self, expected, timeout=None, error=None):
-        """Waits until current URL does not contain `expected`.
+    def wait_until_location_does_not_contain(self, unexpected, timeout=None, error=None):
+        """Waits until current URL does not contain ``unexpected``.
+        Fails if ``timeout`` expires before the ``unexpected`` URL goes away from the page.
 
-        Fails if `timeout` expires before the expected URL goes away from the page. See
-        `introduction` for more information about `timeout` and its
-        default value.
-
-        `error` can be used to override the default error message.
+        Arguments:
+        - ``unexpected``: The unexpected URL value.
+        - ``timeout``: The maximum value to wait for ``unexpected`` URL to go away.
+                       See `introduction` for more information about ``timeout`` and
+                       its default value.
+        - ``error``: The value that would be use to override the default error message.
 
         See also `Wait Until Location Contains`, `Wait Until Page Contains`,
         `Wait Until Page Contains Element`, `Wait For Condition`,
         `Wait Until Element Is Visible` and BuiltIn keyword `Wait Until Keyword Succeeds`.
+
+        Examples:
+        | Wait Until Location Does Not Contain | www | 15s |
         """
         timeout = self._timeout_in_secs if timeout is None else utils.timestr_to_secs(timeout)
         if not error:
             error = "Location was still contain '%s' after %s" %\
-                    (expected, self._format_timeout(timeout))
+                    (unexpected, self._format_timeout(timeout))
         WebDriverWait(self, timeout, self._poll_frequency).\
-            until_not(lambda driver: expected in driver.get_location(), error)
+            until_not(lambda driver: unexpected in driver.get_location(), error)
 
     def _angular_select_checkbox_or_radio_button(self, element):
         """Select checkbox or radio button when AngularJS is ready."""
@@ -527,7 +598,7 @@ class ExtendedSelenium2Library(Selenium2Library):
             browser = self._current_browser()
             try:
                 WebDriverWait(None, timeout, self._poll_frequency).\
-                    until_not(staleness_of(browser.find_element_by_tag_name('body')), '')
+                    until_not(staleness_of(browser.find_element_by_tag_name('html')), '')
             except:
                 # instead of halting the process because document is not ready
                 # in <TIMEOUT>, we try our luck...
@@ -540,3 +611,5 @@ class ExtendedSelenium2Library(Selenium2Library):
                 # instead of halting the process because document is not ready
                 # in <TIMEOUT>, we try our luck...
                 self._debug(exc_info()[0])
+            for keyword in self._page_ready_keyword_list:
+                self._builtin.run_keyword(keyword)

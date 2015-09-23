@@ -1,6 +1,8 @@
 Extended Selenium 2 (WebDriver) web testing library for Robot Framework
 =======================================================================
 
+|Docs| |Version| |Status| |Python| |Download| |License|
+
 Introduction
 ------------
 
@@ -9,7 +11,8 @@ that uses the `Selenium 2 (WebDriver)`_ libraries from the Selenium_ project,
 to control the web browser with AngularJS_ support.
 
 It leverages Selenium2Library_ internally to provide AngularJS_ synchronization support,
-deliver keywords enhancement, and strive for a seamless migration from Selenium2Library_.
+to provide AngularJS_ locators support, to deliver keywords enhancement,
+and strive for a seamless migration from Selenium2Library_.
 
 ExtendedSelenium2Library runs tests in a real browser instance. It should work in
 most modern browsers and can be used with both Python and Jython interpreters.
@@ -22,7 +25,7 @@ Installation
 Using ``pip``
 '''''''''''''
 
-The recommended installation method is using `pip <http://pip-installer.org>`__:
+The recommended installation method is using pip_:
 
 .. code:: bash
 
@@ -53,8 +56,7 @@ Proxy configuration
 If you are behind a proxy, you can use ``--proxy`` command line option
 or set ``http_proxy`` and/or ``https_proxy`` environment variables to
 configure ``pip`` to use it. If you are behind an authenticating NTLM proxy,
-you may want to consider installing `CNTML <http://cntlm.sourceforge.net>`__
-to handle communicating with it.
+you may want to consider installing CNTML_ to handle communicating with it.
 
 For more information about ``--proxy`` option and using pip with proxies
 in general see:
@@ -70,7 +72,7 @@ If you do not have network connection or cannot make proxy to work, you need
 to resort to manual installation. This requires installing both the library
 and its dependencies yourself.
 
-- Make sure you have `Robot Framework installed <http://code.google.com/p/robotframework/wiki/Installation>`__.
+- Make sure you have `Robot Framework installed`_.
 
 - Download source distributions (``*.tar.gz``) for the library and its dependencies:
 
@@ -133,19 +135,65 @@ The `Keyword Documentation`_ can be found online, if you need to generate the ke
 
     make doc
 
+Usage
+-----
+
+To write tests with Robot Framework and ExtendedSelenium2Library,
+ExtendedSelenium2Library must be imported into your Robot test suite.
+See `Robot Framework User Guide`_ for more information.
+
+More information about Robot Framework standard libraries and built-in tools
+can be found in the `Robot Framework Documentation`_.
+
+Contributing
+------------
+
+If you would like to contribute code to Extended Selenium2 Library project you can do so through GitHub by forking the repository and sending a pull request.
+
+When submitting code, please make every effort to follow existing conventions and style in order to keep the code as readable as possible. Please also include appropriate test cases.
+
+Before your code can be accepted into the project you must also sign the `Extended Selenium2 Library CLA`_ (Individual Contributor License Agreement).
+
+That's it! Thank you for your contribution!
+
 License
 -------
 
 Copyright (c) 2015 Richard Huang.
 
-This library is free software, licensed under: `GNU Affero General Public License (AGPL-3.0) <http://www.gnu.org/licenses/agpl-3.0.en.html>`_.
+This library is free software, licensed under: `GNU Affero General Public License (AGPL-3.0)`_.
 
-Documentation and other similar content are provided under `Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-nc-sa/4.0/>`_.
+Documentation and other similar content are provided under `Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License`_.
 
-.. _AngularJS: https://angularjs.org
-.. _Keyword Documentation: https://rickypc.github.io/robotframework-extendedselenium2library/doc/ExtendedSelenium2Library.html
-.. _Robot Framework: http://robotframework.org
-.. _Selenium: http://selenium.openqa.org
-.. _Selenium2Library: https://github.com/rtomac/robotframework-selenium2library/wiki
-.. _Selenium 2 (WebDriver): http://seleniumhq.org/docs/03_webdriver.html
-.. _Robot Framework User Guide: http://code.google.com/p/robotframework/wiki/UserGuide
+.. _AngularJS: https://goo.gl/Kzz8Y3
+.. _CNTML: http://goo.gl/ukiwSO
+.. _Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License: http://goo.gl/SNw73V
+.. _Extended Selenium2 Library CLA: https://goo.gl/forms/1pkl9YfWpA
+.. _GNU Affero General Public License (AGPL-3.0): http://goo.gl/LOMJeU
+.. _Keyword Documentation: https://goo.gl/9z5Xj9
+.. _pip: http://goo.gl/jlJCPE
+.. _Robot Framework: http://goo.gl/lES6WM
+.. _Robot Framework Documentation: http://goo.gl/zy53tf
+.. _Robot Framework installed: https://goo.gl/PFbWqM
+.. _Robot Framework User Guide: http://goo.gl/Q7dfPB
+.. _Selenium: http://goo.gl/fbso3g
+.. _Selenium2Library: https://goo.gl/1VXDSI
+.. _Selenium 2 (WebDriver): http://goo.gl/boVQia
+.. |Docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
+    :target: https://goo.gl/9z5Xj9
+    :alt: Keyword Documentation
+.. |Version| image:: https://img.shields.io/pypi/v/robotframework-extendedselenium2library.svg
+    :target: https://goo.gl/wHr4ni
+    :alt: Package Version
+.. |Status| image:: https://img.shields.io/pypi/status/robotframework-extendedselenium2library.svg
+    :target: https://goo.gl/wHr4ni
+    :alt: Development Status
+.. |Python| image:: https://img.shields.io/pypi/pyversions/robotframework-extendedselenium2library.svg
+    :target: https://goo.gl/sXzgao
+    :alt: Python Version
+.. |Download| image:: https://img.shields.io/pypi/dm/robotframework-extendedselenium2library.svg
+    :target: https://goo.gl/wHr4ni
+    :alt: Monthly Download
+.. |License| image:: https://img.shields.io/pypi/l/robotframework-extendedselenium2library.svg
+    :target: http://goo.gl/LOMJeU
+    :alt: License
